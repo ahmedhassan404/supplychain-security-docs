@@ -1,4 +1,4 @@
-# ChainGuard Data Collection 
+# ChainGuard Data Collection
 
 ## 1. Data Collection Overview
 
@@ -6,41 +6,41 @@ Collect all inputs needed to analyze npm packages and detect supply‑chain thre
 
 ### Main Data Goals
 
- Package metadata
- Dependency graphs
- Vulnerability records
- Static code features
- Labeled malicious vs. benign datasets
+* Package metadata
+* Dependency graphs
+* Vulnerability records
+* Static code features
+* Labeled malicious vs. benign datasets
 
 ## 2. Key Data Sources
 
- Category                      Source  Endpoint                                          Purpose                                                 Auth                                 
- ----------------------------  ---------------------------------------------------------  ------------------------------------------------------  ------------------------------------ 
- Package Metadata              npm Registry API (registry.npmjs.org)                      Names, descriptions, versions, maintainers, timestamps  None                                 
- Download Trends               npm Downloads API                                          Weeklymonthly download counts                          None                                 
- Version & Maintainer Details  Derived from npm registry payloads                         Version history, release dates, maintainer emails       None                                 
- Repository Intelligence       GitHub API                                                 Stars, forks, issues, commits, contributor activity     GITHUB_TOKEN                         
- Vulnerabilities               NVD (services.nvd.nist.gov)                                CVE metadata, CVSS                                      NVD_API_KEY                          
-                               OSV (api.osv.devv1query)                                 Open-source vulnerability records                       None                                 
-                               GitHub Advisories (api.github.comadvisories)              GHSA alerts                                             GITHUB_TOKEN                         
-                               OSS Index (ossindex.sonatype.orgapiv3component-report)  Component risk reports                                  OSS_INDEX_USERNAME + OSS_INDEX_TOKEN 
-                               npm Security Advisories (npm audit)                        Registry-specific advisories                            None                                 
+| Category                     | Source / Endpoint                                         | Purpose                                                | Auth                                 |
+| ---------------------------- | --------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------ |
+| Package Metadata             | npm Registry API (registry.npmjs.org)                     | Names, descriptions, versions, maintainers, timestamps | None                                 |
+| Download Trends              | npm Downloads API                                         | Weekly/monthly download counts                         | None                                 |
+| Version & Maintainer Details | Derived from npm registry payloads                        | Version history, release dates, maintainer emails      | None                                 |
+| Repository Intelligence      | GitHub API                                                | Stars, forks, issues, commits, contributor activity    | GITHUB_TOKEN                         |
+| Vulnerabilities              | NVD (services.nvd.nist.gov)                               | CVE metadata, CVSS                                     | NVD_API_KEY                          |
+|                              | OSV (api.osv.dev/v1/query)                                | Open‑source vulnerability records                      | None                                 |
+|                              | GitHub Advisories (api.github.com/advisories)             | GHSA alerts                                            | GITHUB_TOKEN                         |
+|                              | OSS Index (ossindex.sonatype.org/api/v3/component-report) | Component risk reports                                 | OSS_INDEX_USERNAME + OSS_INDEX_TOKEN |
+|                              | npm Security Advisories (npm audit)                       | Registry‑specific advisories                           | None                                 |
 
 ## 3. Dependency Graph Collection
 
- Parse `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`.
- Build direct + transitive dependency trees with depth tracking.
- Derive graph metrics (degree, centrality, path lengths).
+* Parse `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`.
+* Build direct + transitive dependency trees with depth tracking.
+* Derive graph metrics (degree, centrality, path lengths).
 
 ## 4. Vulnerability Databases
 
-Capture for each source
+Capture for each source:
 
- VulnerabilityCVE ID
- Severity + CVSS
- Affected version ranges
- Fixedpatched versions
- Reference URLs
+* Vulnerability/CVE ID
+* Severity + CVSS
+* Affected version ranges
+* Fixed/patched versions
+* Reference URLs
 
 ## 5. Static Code Analysis
 
@@ -55,24 +55,24 @@ Capture for each source
 
 ### Malicious Sources
 
- GitHub Security Advisories
- npm malwareremoval reports
- OSV entries
- OSS Index malicious findings
- Research datasets (e.g., Backstabber’s Knife Collection)
+* GitHub Security Advisories
+* npm malware/removal reports
+* OSV entries
+* OSS Index malicious findings
+* Research datasets (e.g., Backstabber’s Knife Collection)
 
 ### Benign Sources
 
- Top downloaded npm packages
- Verified org scopes (e.g., `@google`, `@microsoft`)
- Long-lived, frequently updated packages
+* Top downloaded npm packages
+* Verified org scopes (e.g., `@google`, `@microsoft`)
+* Long‑lived, frequently updated packages
 
 ## 7. Data Storage (High Level)
 
-Normalize and persist
+Normalize and persist:
 
- Packages, versions, maintainers
- Dependency edgesgraphs
- Vulnerability associations
- Static analysis features
- Labels (malicious  benign  suspicious)
+* Packages, versions, maintainers
+* Dependency edges/graphs
+* Vulnerability associations
+* Static analysis features
+* Labels (malicious / benign / suspicious)
