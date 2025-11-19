@@ -38,7 +38,6 @@ This guide describes how to collect, structure, and store data required for trai
 | **Vulnerability DBs** | NVD, OSV, GitHub Advisories, npm audit | Daily |
 | **Code Repositories** | GitHub, npm package tarballs | On-demand |
 | **Download Stats** | npm download API | Daily |
-| **User Projects** | ChainGuard user uploads | Real-time |
 
 ---
 
@@ -593,3 +592,4 @@ This guide provides comprehensive instructions for collecting all data required 
 - Build balanced training datasets with proper train/validation/test splits
 - Set up monitoring and alerting
 - Begin data collection for training dataset
+
