@@ -40,6 +40,8 @@ ChainGuard addresses software supply chain security for web applications by:
 - **FR1.1.2**: The system SHALL validate email format and password strength
 - **FR1.1.3**: The system SHALL prevent duplicate email registrations
 - **FR1.1.4**: The system SHALL return a JWT token upon successful registration
+- **FR1.1.5**: The system SHALL support OAuth authentication through **GitHub**.  
+- **FR1.1.6**: The system SHALL support OAuth authentication through **Google**.
 
 #### FR1.2: User Authentication
 - **FR1.2.1**: The system SHALL authenticate users via email and password
@@ -535,5 +537,6 @@ ChainGuard addresses software supply chain security for web applications by:
 
 
 **Document End**
+
 
 
