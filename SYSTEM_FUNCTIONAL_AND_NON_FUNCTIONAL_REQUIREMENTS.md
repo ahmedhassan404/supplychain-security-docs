@@ -7,9 +7,6 @@
 1. [Introduction](#introduction)
 2. [Functional Requirements](#functional-requirements)
 3. [Non-functional Requirements](#non-functional-requirements)
-4. [System Constraints](#system-constraints)
-5. [Dependencies](#dependencies)
-
 ---
 
 ## Introduction
@@ -31,8 +28,6 @@ ChainGuard addresses software supply chain security for web applications by:
 
 - **Functional Requirements**: Define what the system must do
 - **Non-functional Requirements**: Define how well the system must perform
-- **System Constraints**: Define limitations and boundaries
-- **Dependencies**: Define external systems and services required
 
 ---
 
@@ -67,8 +62,8 @@ ChainGuard addresses software supply chain security for web applications by:
 ### FR2: Project Management
 
 #### FR2.1: Project Creation
-- **FR2.1.1**: The system SHALL allow users to create projects with name, description, and package manager type
-- **FR2.1.2**: The system SHALL support package managers: npm, yarn, pnpm
+- **FR2.1.1**: The system SHALL allow users to create projects with name, description
+- **FR2.1.2**: The system SHALL support package managers: npm
 - **FR2.1.3**: The system SHALL validate project name uniqueness per user
 - **FR2.1.4**: The system SHALL associate projects with their owner (user)
 
@@ -537,150 +532,8 @@ ChainGuard addresses software supply chain security for web applications by:
 
 ---
 
-## System Constraints
-
-### SC1: Technical Constraints
-
-#### SC1.1: Infrastructure
-- **SC1.1.1**: The system SHALL be deployed on cloud infrastructure (AWS, GCP, or Azure)
-- **SC1.1.2**: The system SHALL use containerized deployment (Docker/Kubernetes)
-- **SC1.1.3**: The system SHALL require PostgreSQL 12+ for primary database
-- **SC1.1.4**: The system SHALL require Neo4j 4.0+ for graph database
-- **SC1.1.5**: The system SHALL require Redis 6.0+ for caching
-
-#### SC1.2: Third-Party Dependencies
-- **SC1.2.1**: The system SHALL depend on npm Registry API (no official rate limits, but must be respectful)
-- **SC1.2.2**: The system SHALL depend on NVD API (50 requests per 30 seconds)
-- **SC1.2.3**: The system SHALL depend on OSV API (1000 requests per day)
-- **SC1.2.4**: The system SHALL depend on GitHub API (5000 requests per hour with authentication)
-
-#### SC1.3: ML Model Constraints
-- **SC1.3.1**: The system SHALL require minimum 4GB RAM per ML model server instance
-- **SC1.3.2**: The system SHALL require GPU support (optional) for faster text model inference
-- **SC1.3.3**: The system SHALL require model versioning system (MLflow)
-
----
-
-### SC2: Business Constraints
-
-#### SC2.1: Cost
-- **SC2.1.1**: The system SHALL optimize third-party API usage to minimize costs
-- **SC2.1.2**: The system SHALL implement efficient caching to reduce external API calls
-
-#### SC2.2: Time to Market
-- **SC2.2.1**: The system SHALL be developed in phases (see Implementation Roadmap)
-- **SC2.2.2**: The system SHALL prioritize core features for initial release
-
----
-
-### SC3: Regulatory Constraints
-
-#### SC3.1: Data Protection
-- **SC3.1.1**: The system SHALL comply with GDPR for EU users
-- **SC3.1.2**: The system SHALL comply with data protection regulations in all operating regions
-
-#### SC3.2: Security Standards
-- **SC3.2.1**: The system SHALL undergo regular security audits
-- **SC3.2.2**: The system SHALL implement security best practices
-
----
-
-## Dependencies
-
-### D1: External Services
-
-#### D1.1: Vulnerability Databases
-- **D1.1.1**: NVD (National Vulnerability Database) API
-- **D1.1.2**: OSV (Open Source Vulnerabilities) API
-- **D1.1.3**: GitHub Security Advisories API
-- **D1.1.4**: npm Security Advisories
-
-#### D1.2: Package Registries
-- **D1.2.1**: npm Registry API
-- **D1.2.2**: npm Downloads API
-- **D1.2.3**: GitHub API (for repository metadata)
-
-#### D1.3: Infrastructure Services
-- **D1.3.1**: Cloud provider services (compute, storage, databases)
-- **D1.3.2**: CDN services (optional, for static assets)
-- **D1.3.3**: Monitoring services (APM, logging, error tracking)
-
----
-
-### D2: Internal Components
-
-#### D2.1: Database Systems
-- **D2.1.1**: PostgreSQL (primary relational database)
-- **D2.1.2**: Neo4j (graph database for dependency relationships)
-- **D2.1.3**: Redis (caching and session storage)
-
-#### D2.2: ML Infrastructure
-- **D2.2.1**: ML model serving infrastructure (FastAPI/Flask)
-- **D2.2.2**: Model registry (MLflow)
-- **D2.2.3**: Feature store for ML features
-
-#### D2.3: Application Services
-- **D2.3.1**: Job queue system (Bull/BullMQ) for async processing
-- **D2.3.2**: File storage (S3/GCS/Azure Blob) for uploads and reports
-- **D2.3.3**: WebSocket/SSE server for real-time updates
-
----
-
-### D3: Software Libraries and Frameworks
-
-#### D3.1: ML Libraries
-- **D3.1.1**: XGBoost (for tabular models)
-- **D3.1.2**: Transformers (BERT, Sentence Transformers)
-- **D3.1.3**: PyTorch Geometric (for graph neural networks)
-
-#### D3.2: Application Frameworks
-- **D3.2.1**: Backend framework (Node.js/Express, Python/FastAPI, or similar)
-- **D3.2.2**: Frontend framework (React, Vue, or similar)
-- **D3.2.3**: Database ORMs and drivers
-
----
-
-## Requirements Traceability
-
-### Requirements Categories
-
-| Category | Count | Priority Distribution |
-|----------|-------|----------------------|
-| Functional Requirements | 100+ | High: 60%, Medium: 30%, Low: 10% |
-| Non-functional Requirements | 50+ | High: 70%, Medium: 25%, Low: 5% |
-| System Constraints | 15+ | All High Priority |
-| Dependencies | 20+ | All Required |
-
-### Priority Levels
-
-- **High Priority**: Critical for core functionality, must be implemented in initial release
-- **Medium Priority**: Important for full feature set, can be implemented in subsequent releases
-- **Low Priority**: Nice to have, can be deferred or implemented based on user feedback
-
----
-
-
-## Appendix A: Acronyms and Abbreviations
-
-- **API**: Application Programming Interface
-- **CVE**: Common Vulnerabilities and Exposures
-- **CVSS**: Common Vulnerability Scoring System
-- **GDPR**: General Data Protection Regulation
-- **JWT**: JSON Web Token
-- **ML**: Machine Learning
-- **NVD**: National Vulnerability Database
-- **OSV**: Open Source Vulnerabilities
-- **OWASP**: Open Web Application Security Project
-- **RBAC**: Role-Based Access Control
-- **SBOM**: Software Bill of Materials
-- **SPDX**: Software Package Data Exchange
-- **SSE**: Server-Sent Events
-- **TLS**: Transport Layer Security
-- **WAF**: Web Application Firewall
-
----
-
 
 
 **Document End**
+
 
