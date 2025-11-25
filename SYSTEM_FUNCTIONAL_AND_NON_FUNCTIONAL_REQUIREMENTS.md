@@ -1,542 +1,363 @@
 # ChainGuard: System Functional and Non-functional Requirements
 
----
-
 ## Table of Contents
-
-1. [Introduction](#introduction)
-2. [Functional Requirements](#functional-requirements)
-3. [Non-functional Requirements](#non-functional-requirements)
----
+- Introduction
+- Functional Requirements
+- Non-functional Requirements
 
 ## Introduction
 
 ### Purpose
-
-This document defines the functional and non-functional requirements for ChainGuard, a Dependency Analysis and Supply Chain Security Platform for Web Applications. ChainGuard provides automated vulnerability detection, machine learning-powered risk analysis, and comprehensive security reporting for web application dependencies.
+This document defines the functional and non-functional requirements for ChainGuard, a Dependency Analysis and Supply Chain Security Platform for Web Applications. The platform performs automated vulnerability detection, machine-learning risk scoring, and detailed security reporting.
 
 ### Scope
-
-ChainGuard addresses software supply chain security for web applications by:
+ChainGuard enhances supply chain security for modern web applications by:
 - Scanning dependency manifests (package.json, lock files)
-- Detecting known vulnerabilities from multiple security databases
-- Using machine learning to identify suspicious packages
-- Providing interactive dashboards and detailed reports
-- Generating Software Bill of Materials (SBOM) in standard formats
+- Detecting known vulnerabilities using multiple security databases
+- Performing ML-powered package classification
+- Generating dependency graphs, risk scores, and SBOM files
+- Providing dashboards and exportable reports
 
 ### Document Structure
-
-- **Functional Requirements**: Define what the system must do
-- **Non-functional Requirements**: Define how well the system must perform
-
----
+- Functional Requirements: Define what the system must do
+- Non-functional Requirements: Define constraints, performance, security, and operational expectations
 
 ## Functional Requirements
 
 ### FR1: Authentication and Authorization
 
 #### FR1.1: User Registration
-- **FR1.1.1**: The system SHALL allow users to register with email, name, and password
-- **FR1.1.2**: The system SHALL validate email format and password strength
-- **FR1.1.3**: The system SHALL prevent duplicate email registrations
-- **FR1.1.4**: The system SHALL return a JWT token upon successful registration
-- **FR1.1.5**: The system SHALL support OAuth authentication through **GitHub**.  
-- **FR1.1.6**: The system SHALL support OAuth authentication through **Google**.
+- FR1.1.1: Allow registration using email, name, password
+- FR1.1.2: Validate email format and password strength
+- FR1.1.3: Prevent duplicate email registration
+- FR1.1.4: Return a JWT token upon successful registration
+- FR1.1.5: The system SHALL support OAuth authentication through GitHub
+- FR1.1.6: The system SHALL support OAuth authentication through Google
 
-#### FR1.2: User Authentication
-- **FR1.2.1**: The system SHALL authenticate users via email and password
-- **FR1.2.2**: The system SHALL return a JWT token upon successful authentication
-- **FR1.2.3**: The system SHALL invalidate tokens upon logout
-- **FR1.2.4**: The system SHALL support token expiration (24 hours default)
+#### FR1.2: User Login
+- FR1.2.1: Authenticate via email + password
+- FR1.2.2: Return JWT token
+- FR1.2.3: Invalidate tokens on logout
+- FR1.2.4: Support token expiration (default 24 hours)
 
-#### FR1.3: User Profile Management
-- **FR1.3.1**: The system SHALL allow authenticated users to retrieve their profile
-- **FR1.3.2**: The system SHALL support role-based access control (user, admin)
-- **FR1.3.3**: The system SHALL track user creation and update timestamps
+#### FR1.3: User Profile
+- FR1.3.1: Retrieve authenticated user profile
+- FR1.3.2: Support RBAC (user/admin)
+- FR1.3.3: Track creation/update timestamps
 
 #### FR1.4: Session Management
-- **FR1.4.1**: The system SHALL validate JWT tokens on all protected endpoints
-- **FR1.4.2**: The system SHALL return 401 Unauthorized for invalid/expired tokens
-- **FR1.4.3**: The system SHALL support token refresh mechanism
-
----
+- FR1.4.1: Validate JWT tokens on protected endpoints
+- FR1.4.2: Return 401 for invalid/expired tokens
+- FR1.4.3: Support token refresh
 
 ### FR2: Project Management
 
 #### FR2.1: Project Creation
-- **FR2.1.1**: The system SHALL allow users to create projects with name, description
-- **FR2.1.2**: The system SHALL support package managers: npm
-- **FR2.1.3**: The system SHALL validate project name uniqueness per user
-- **FR2.1.4**: The system SHALL associate projects with their owner (user)
+- Create project (name + description)
+- Validate name uniqueness per user
+- Associate projects with owners
+- Support npm package manager
 
 #### FR2.2: Project Retrieval
-- **FR2.2.1**: The system SHALL allow users to list all their projects
-- **FR2.2.2**: The system SHALL support pagination for project lists
-- **FR2.2.3**: The system SHALL allow users to retrieve detailed project information
-- **FR2.2.4**: The system SHALL include latest scan information in project details
+- List all user projects
+- Support pagination
+- Retrieve project details
+- Include latest scan info
 
-#### FR2.3: Project Updates
-- **FR2.3.1**: The system SHALL allow users to update project metadata (name, description, repository URL)
-- **FR2.3.2**: The system SHALL validate project ownership before allowing updates
-- **FR2.3.3**: The system SHALL track project update timestamps
+#### FR2.3: Project Update
+- Update metadata (name, description, repo URL)
+- Validate ownership
+- Track update timestamps
 
 #### FR2.4: Project Deletion
-- **FR2.4.1**: The system SHALL allow users to delete their projects
-- **FR2.4.2**: The system SHALL delete all associated scans and data when a project is deleted
-- **FR2.4.3**: The system SHALL validate project ownership before deletion
-
----
+- Allow deletion
+- Remove associated scans and data
+- Validate ownership
 
 ### FR3: File Upload and Scanning
 
 #### FR3.1: File Upload
-- **FR3.1.1**: The system SHALL accept file uploads via multipart/form-data
-- **FR3.1.2**: The system SHALL support file types: package.json, package-lock.json
-- **FR3.1.3**: The system SHALL validate file formats before processing
-- **FR3.1.4**: The system SHALL enforce maximum file size limits (50MB per file)
-- **FR3.1.5**: The system SHALL return a scan ID upon successful upload
+- Support multipart/form-data
+- Accept: package.json, package-lock.json
+- Validate file format + size (max 50MB)
+- Return scan ID
 
 #### FR3.2: Scan Initiation
-- **FR3.2.1**: The system SHALL allow users to start scans with configurable options
-- **FR3.2.2**: The system SHALL support scan options: includeDevDependencies, scanTransitive, checkCVEs, checkLicenses
-- **FR3.2.3**: The system SHALL process scans asynchronously using job queues
-- **FR3.2.4**: The system SHALL return scan status immediately upon initiation
+- Configurable options (devDeps, transitive, CVEs, licenses)
+- Asynchronous job queue
+- Return initial scan status
 
-#### FR3.3: Scan Status Tracking
-- **FR3.3.1**: The system SHALL provide real-time scan progress updates
-- **FR3.3.2**: The system SHALL track scan status: uploading, scanning, complete, error
-- **FR3.3.3**: The system SHALL report progress percentage and packages scanned
-- **FR3.3.4**: The system SHALL support WebSocket and Server-Sent Events (SSE) for real-time updates
+#### FR3.3: Scan Status
+- Real-time progress
+- Track status: uploading, scanning, complete, error
+- Provide % progress
+- Support WebSocket/SSE
 
 #### FR3.4: Dependency Graph Extraction
-- **FR3.4.1**: The system SHALL parse lock files to extract dependency information
-- **FR3.4.2**: The system SHALL build complete dependency graphs (direct and transitive)
-- **FR3.4.3**: The system SHALL store dependency relationships in a graph database
-- **FR3.4.4**: The system SHALL calculate dependency depth and path information
-
----
+- Parse lock files
+- Build dependency graph
+- Store graph in graph database
+- Compute dependency depth/path
 
 ### FR4: Vulnerability Detection
 
 #### FR4.1: CVE Database Integration
-- **FR4.1.1**: The system SHALL integrate with NVD (National Vulnerability Database) API
-- **FR4.1.2**: The system SHALL integrate with OSV (Open Source Vulnerabilities) API
-- **FR4.1.3**: The system SHALL integrate with GitHub Security Advisories API
-- **FR4.1.4**: The system SHALL integrate with npm security advisories
-- **FR4.1.5**: The system SHALL maintain an internal CVE database synchronized with external sources
+- Integrate with NVD, OSV, GitHub, npm
+- Maintain internal CVE DB
 
 #### FR4.2: Vulnerability Matching
-- **FR4.2.1**: The system SHALL match packages against known CVEs by name and version
-- **FR4.2.2**: The system SHALL support version range matching for affected versions
-- **FR4.2.3**: The system SHALL identify fixed versions for each vulnerability
-- **FR4.2.4**: The system SHALL assign severity levels: critical, high, medium, low
+- Match by package name/version
+- Support version ranges
+- Identify fixed versions
+- Assign severity levels
 
-#### FR4.3: Vulnerability Information
-- **FR4.3.1**: The system SHALL provide detailed CVE information including CVSS scores
-- **FR4.3.2**: The system SHALL include vulnerability descriptions and references
-- **FR4.3.3**: The system SHALL track vulnerability publication and modification dates
-- **FR4.3.4**: The system SHALL provide remediation recommendations
+#### FR4.3: CVE Information
+- Provide CVSS scores
+- Provide descriptions + references
+- Track publication/update dates
+- Provide remediation steps
 
 #### FR4.4: Vulnerability Management
-- **FR4.4.1**: The system SHALL allow users to view all vulnerabilities for a scan
-- **FR4.4.2**: The system SHALL support filtering vulnerabilities by severity, status, package
-- **FR4.4.3**: The system SHALL allow users to mark vulnerabilities as fixed or ignored
-- **FR4.4.4**: The system SHALL track vulnerability status changes
+- View all vulnerabilities
+- Filter by severity, status, package
+- Mark vulnerabilities as fixed/ignored
+- Track status changes
 
----
+### FR5: Machine Learning & Risk Analysis
 
-### FR5: Machine Learning and Risk Analysis
-
-#### FR5.1: Package Classification
-- **FR5.1.1**: The system SHALL classify packages as safe, suspicious, malicious, or unknown using ML models
-- **FR5.1.2**: The system SHALL provide confidence scores for classifications
-- **FR5.1.3**: The system SHALL calculate risk scores (0-10 scale) for each package
-- **FR5.1.4**: The system SHALL provide reasoning for classifications (behavioral, reputation, metadata)
+#### FR5.1: Classification
+- Classify packages (safe, suspicious, malicious)
+- Provide confidence scores
+- Risk score (0–10)
+- Explain classification
 
 #### FR5.2: Feature Extraction
-- **FR5.2.1**: The system SHALL extract metadata features (version age, update frequency, downloads, maintainers)
-- **FR5.2.2**: The system SHALL generate text embeddings from package descriptions and READMEs
-- **FR5.2.3**: The system SHALL compute graph features (node degree, centrality, depth)
-- **FR5.2.4**: The system SHALL extract behavioral features (update patterns, maintainer changes)
-- **FR5.2.5**: The system SHALL perform static analysis to extract code-level features
+- Metadata features
+- Text embeddings (README)
+- Graph features (centrality, depth)
+- Behavioral features
+- Static analysis features
 
-#### FR5.3: ML Model Inference
-- **FR5.3.1**: The system SHALL use XGBoost models for tabular feature classification
-- **FR5.3.2**: The system SHALL use BERT/Sentence Transformers for text analysis
-- **FR5.3.3**: The system SHALL use Graph Neural Networks (GraphSAGE/GAT) for dependency graph analysis
-- **FR5.3.4**: The system SHALL combine model outputs using ensemble methods
-- **FR5.3.5**: The system SHALL provide inference results within 500ms per package
+#### FR5.3: Model Inference
+- XGBoost for tabular data
+- BERT/Sentence Transformers for text
+- GNN (GraphSAGE/GAT)
+- Ensemble models
+- Inference <500ms/package
 
 #### FR5.4: Anomaly Detection
-- **FR5.4.1**: The system SHALL detect behavioral pattern anomalies
-- **FR5.4.2**: The system SHALL detect supply chain anomalies
-- **FR5.4.3**: The system SHALL detect statistical anomalies in package metrics
-- **FR5.4.4**: The system SHALL provide anomaly confidence scores and descriptions
+- Detect behavioral anomalies
+- Detect supply chain anomalies
+- Detect statistical anomalies
+- Provide explanations
 
 #### FR5.5: Threat Prediction
-- **FR5.5.1**: The system SHALL predict potential supply chain attack vectors
-- **FR5.5.2**: The system SHALL provide threat probability scores
-- **FR5.5.3**: The system SHALL suggest mitigation steps for predicted threats
-- **FR5.5.4**: The system SHALL identify affected packages for each threat
+- Predict supply chain attack vectors
+- Probability scores
+- Mitigation steps
+- Identify impacted packages
 
-#### FR5.6: ML Model Management
-- **FR5.6.1**: The system SHALL track ML model performance metrics (accuracy, precision, recall, F1-score)
-- **FR5.6.2**: The system SHALL support model versioning
-- **FR5.6.3**: The system SHALL provide feature importance analysis
-- **FR5.6.4**: The system SHALL support A/B testing of model versions
+#### FR5.6: Model Management
+- Track metrics
+- Support versioning
+- Feature importance
+- A/B testing
 
----
-
-### FR6: Dependency Analysis and Visualization
+### FR6: Dependency Analysis & Visualization
 
 #### FR6.1: Dependency Tree
-- **FR6.1.1**: The system SHALL provide hierarchical dependency tree structures
-- **FR6.1.2**: The system SHALL distinguish between direct and transitive dependencies
-- **FR6.1.3**: The system SHALL include vulnerability status for each dependency
-- **FR6.1.4**: The system SHALL support filtering by dependency type and depth
+- Show hierarchical tree
+- Distinguish direct vs transitive
+- Show vulnerability status
+- Filter by type/depth
 
-#### FR6.2: Dependency Graph
-- **FR6.2.1**: The system SHALL provide graph data optimized for visualization (nodes and edges)
-- **FR6.2.2**: The system SHALL support multiple graph layouts (circular, hierarchical, force-directed)
-- **FR6.2.3**: The system SHALL color-code nodes by vulnerability status
-- **FR6.2.4**: The system SHALL calculate node positions for consistent rendering
+#### FR6.2: Graph Visualization
+- Provide nodes/edges
+- Support different layouts
+- Color-code by vulnerability
+- Stable node positioning
 
 #### FR6.3: Dependency Paths
-- **FR6.3.1**: The system SHALL identify all paths from root to a specific package
-- **FR6.3.2**: The system SHALL show how transitive dependencies are introduced
-- **FR6.3.3**: The system SHALL highlight vulnerable paths in dependency trees
+- Identify all paths to a package
+- Show transitive introductions
+- Highlight vulnerable paths
 
-#### FR6.4: Dependency Statistics
-- **FR6.4.1**: The system SHALL calculate total package counts (direct and transitive)
-- **FR6.4.2**: The system SHALL calculate maximum dependency depth
-- **FR6.4.3**: The system SHALL identify vulnerable package counts by severity
-
----
+#### FR6.4: Dependency Stats
+- Total package count
+- Max depth
+- Vulnerable package counts
 
 ### FR7: Dashboard and Reporting
 
 #### FR7.1: Security Statistics
-- **FR7.1.1**: The system SHALL display vulnerability counts by severity (critical, high, medium, low)
-- **FR7.1.2**: The system SHALL show trends (increases/decreases) for vulnerability counts
-- **FR7.1.3**: The system SHALL calculate overall risk scores
-- **FR7.1.4**: The system SHALL display scan completion percentages
-- **FR7.1.5**: The system SHALL track issues fixed over time
+- Vulnerabilities by severity
+- Trends
+- Risk score
+- Completion %
+- Fix history
 
 #### FR7.2: Activity Feed
-- **FR7.2.1**: The system SHALL provide a real-time activity feed
-- **FR7.2.2**: The system SHALL include events: vulnerability detections, scans completed, fixes applied
-- **FR7.2.3**: The system SHALL support pagination for activity feeds
-- **FR7.2.4**: The system SHALL display relative timestamps (e.g., "2 minutes ago")
+- Real-time feed
+- Key events
+- Pagination
+- Relative timestamps
 
 #### FR7.3: Dependency Health
-- **FR7.3.1**: The system SHALL calculate health scores for major dependencies
-- **FR7.3.2**: The system SHALL display vulnerability counts per dependency
-- **FR7.3.3**: The system SHALL show trend indicators (improving/worsening)
+- Health scores
+- Vulnerabilities per dependency
+- Trends
 
 #### FR7.4: Report Generation
-- **FR7.4.1**: The system SHALL generate Executive Summary reports
-- **FR7.4.2**: The system SHALL generate Detailed Analysis reports
-- **FR7.4.3**: The system SHALL generate Compliance reports (OWASP, NIST, ISO 27001, SOC 2)
-- **FR7.4.4**: The system SHALL generate Trend Analysis reports
-- **FR7.4.5**: The system SHALL support custom date ranges for reports
-- **FR7.4.6**: The system SHALL process report generation asynchronously
+- Executive Summary
+- Detailed Analysis
+- Compliance (OWASP, NIST, ISO 27001, SOC2)
+- Trend Analysis
+- Custom date ranges
+- Asynchronous generation
 
 #### FR7.5: Report Export
-- **FR7.5.1**: The system SHALL export reports in PDF format
-- **FR7.5.2**: The system SHALL export reports in CSV format
-- **FR7.5.3**: The system SHALL export reports in JSON format
-- **FR7.5.4**: The system SHALL include charts and visualizations in PDF reports
+- PDF
+- CSV
+- JSON
+- Include charts
 
----
+### FR8: Data Export
 
-### FR8: SBOM Generation
+#### FR8.1: Scan Results
+- JSON
+- CSV
+- PDF
+- Include all dependency + vulnerability data
 
-#### FR8.1: SBOM Formats
-- **FR8.1.1**: The system SHALL generate SBOMs in SPDX format (2.3 and 3.0)
-- **FR8.1.2**: The system SHALL generate SBOMs in CycloneDX format (1.4 and 1.5)
-- **FR8.1.3**: The system SHALL generate SBOMs in SWID format
-- **FR8.1.4**: The system SHALL generate SBOMs in JSON format
+#### FR8.2: Vulnerability Exports
+- Filter by severity/status/package
+- Include CVE details
 
-#### FR8.2: SBOM Content
-- **FR8.2.1**: The system SHALL include all packages (direct and transitive) in SBOMs
-- **FR8.2.2**: The system SHALL include vulnerability information in SBOMs
-- **FR8.2.3**: The system SHALL include license information in SBOMs
-- **FR8.2.4**: The system SHALL include package metadata (version, publisher, repository)
+### FR9: CVE Database Synchronization
 
-#### FR8.3: SBOM Management
-- **FR8.3.1**: The system SHALL allow users to generate SBOMs for completed scans
-- **FR8.3.2**: The system SHALL process SBOM generation asynchronously
-- **FR8.3.3**: The system SHALL allow users to list and retrieve generated SBOMs
-- **FR8.3.4**: The system SHALL support SBOM format conversion
+#### FR9.1: Sync Operations
+- Manual sync (admin)
+- Scheduled automatic sync
+- Sources: NVD, OSV, GitHub, npm
+- Track sync logs
 
----
+#### FR9.2: CVE Search
+- Search by CVE ID
+- Search by package
+- Search by severity
+- Keyword search
 
-### FR9: Data Export
+### FR10: Package Information
 
-#### FR9.1: Scan Results Export
-- **FR9.1.1**: The system SHALL export scan results in JSON format
-- **FR9.1.2**: The system SHALL export scan results in CSV format
-- **FR9.1.3**: The system SHALL export scan results in PDF format
-- **FR9.1.4**: The system SHALL include all package and vulnerability data in exports
+#### FR10.1: Package Details
+- Metadata
+- Versions
+- Licenses
+- Maintainers
+- Downloads
+- Repo info
 
-#### FR9.2: Vulnerability Export
-- **FR9.2.1**: The system SHALL export vulnerability lists with filtering options
-- **FR9.2.2**: The system SHALL support export by severity, status, or package
-- **FR9.2.3**: The system SHALL include CVE details in vulnerability exports
+#### FR10.2: Package Search
+- Search npm registry
+- Include security score
+- Pagination
 
----
+#### FR10.3: Package Versions
+- List versions
+- Show security status
+- Recommend safe version
 
-### FR10: CVE Database Synchronization
+### FR11: Real-time Updates
 
-#### FR10.1: CVE Sync
-- **FR10.1.1**: The system SHALL support manual CVE database synchronization (admin only)
-- **FR10.1.2**: The system SHALL support scheduled automatic CVE synchronization
-- **FR10.1.3**: The system SHALL sync from multiple sources: NVD, OSV, GitHub, npm
-- **FR10.1.4**: The system SHALL track sync status and statistics
+#### FR11.1: WebSocket
+- Real-time updates
+- JWT authentication
+- Channel subscriptions
+- Scan progress push
 
-#### FR10.2: CVE Search
-- **FR10.2.1**: The system SHALL allow users to search CVEs by CVE ID
-- **FR10.2.2**: The system SHALL allow users to search CVEs by package name
-- **FR10.2.3**: The system SHALL allow users to search CVEs by severity
-- **FR10.2.4**: The system SHALL support keyword search in CVE descriptions
+#### FR11.2: SSE
+- Stream progress
+- Auto-close on completion
 
----
-
-### FR11: Package Information
-
-#### FR11.1: Package Details
-- **FR11.1.1**: The system SHALL provide detailed package information from npm registry
-- **FR11.1.2**: The system SHALL include package metadata: description, version, license, maintainers
-- **FR11.1.3**: The system SHALL include download statistics
-- **FR11.1.4**: The system SHALL include repository information
-
-#### FR11.2: Package Search
-- **FR11.2.1**: The system SHALL allow users to search packages in npm registry
-- **FR11.2.2**: The system SHALL return package search results with security scores
-- **FR11.2.3**: The system SHALL support pagination for search results
-
-#### FR11.3: Package Versions
-- **FR11.3.1**: The system SHALL list all available versions for a package
-- **FR11.3.2**: The system SHALL indicate security status for each version
-- **FR11.3.3**: The system SHALL identify the latest safe version
-
----
-
-### FR12: Real-time Updates
-
-#### FR12.1: WebSocket Support
-- **FR12.1.1**: The system SHALL support WebSocket connections for real-time updates
-- **FR12.1.2**: The system SHALL authenticate WebSocket connections via JWT tokens
-- **FR12.1.3**: The system SHALL support channel subscriptions (scan progress, vulnerabilities, anomalies)
-- **FR12.1.4**: The system SHALL send real-time scan progress updates
-
-#### FR12.2: Server-Sent Events
-- **FR12.2.1**: The system SHALL support SSE as an alternative to WebSockets
-- **FR12.2.2**: The system SHALL stream scan progress via SSE
-- **FR12.2.3**: The system SHALL close SSE connections when scans complete
-
----
-
-## Non-functional Requirements
+## Non-Functional Requirements (NFR)
 
 ### NFR1: Performance
 
-#### NFR1.1: Response Time
-- **NFR1.1.1**: Authentication endpoints SHALL respond within 200ms
-- **NFR1.1.2**: Dashboard statistics SHALL load within 500ms
-- **NFR1.1.3**: Scan status queries SHALL respond within 100ms
-- **NFR1.1.4**: Vulnerability detail queries SHALL respond within 300ms
-- **NFR1.1.5**: ML model inference SHALL complete within 500ms per package
-- **NFR1.1.6**: Report generation SHALL be asynchronous (notify when complete)
-- **NFR1.1.7**: Export operations SHALL complete within 2 seconds for small files, asynchronously for large files
+#### Response Time
+- Auth <200ms
+- Dashboard <500ms
+- Scan status <100ms
+- Vulnerability detail <300ms
+- ML inference <500ms
+- Exports <2s for small files
 
-#### NFR1.2: Throughput
-- **NFR1.2.1**: The system SHALL process 100+ packages per second during scanning
-- **NFR1.2.2**: The system SHALL support 1000+ concurrent users
-- **NFR1.2.3**: The system SHALL handle 10,000+ API requests per minute
+#### Throughput
+- 100+ packages/sec
+- 1000+ concurrent users
+- 10,000+ requests/min
 
-#### NFR1.3: Scan Processing Time
-- **NFR1.3.1**: The system SHALL complete scans for 100 packages within 5 minutes
-- **NFR1.3.2**: The system SHALL process scans in parallel for multiple packages
-- **NFR1.3.3**: The system SHALL provide progress updates every 2-3 seconds during scanning
-
----
+#### Scan Processing
+- 100 packages <5 min
+- Parallel processing
+- Progress every 2–3 seconds
 
 ### NFR2: Scalability
+- Horizontal scaling
+- Load balancing
+- ML model server scaling
+- DB read replicas
+- Connection pooling
+- Object storage scaling
 
-#### NFR2.1: Horizontal Scaling
-- **NFR2.1.1**: The system SHALL support horizontal scaling of application servers
-- **NFR2.1.2**: The system SHALL support separate scaling of ML model servers
-- **NFR2.1.3**: The system SHALL support load balancing across multiple instances
-
-#### NFR2.2: Database Scaling
-- **NFR2.2.1**: The system SHALL support database read replicas for scaling reads
-- **NFR2.2.2**: The system SHALL support connection pooling
-- **NFR2.2.3**: The system SHALL support database sharding if needed for large scale
-
-#### NFR2.3: Storage Scaling
-- **NFR2.3.1**: The system SHALL support object storage for file uploads and reports
-- **NFR2.3.2**: The system SHALL support automatic storage scaling
-
----
-
-### NFR3: Reliability and Availability
-
-#### NFR3.1: Uptime
-- **NFR3.1.1**: The system SHALL maintain 99.9% uptime SLA
-- **NFR3.1.2**: The system SHALL support high availability with redundant instances
-- **NFR3.1.3**: The system SHALL implement health checks for all services
-
-#### NFR3.2: Fault Tolerance
-- **NFR3.2.1**: The system SHALL gracefully handle third-party API failures
-- **NFR3.2.2**: The system SHALL implement retry logic with exponential backoff
-- **NFR3.2.3**: The system SHALL fall back to cached data when external APIs are unavailable
-- **NFR3.2.4**: The system SHALL not lose scan data in case of failures
-
-#### NFR3.3: Error Handling
-- **NFR3.3.1**: The system SHALL return appropriate HTTP status codes
-- **NFR3.3.2**: The system SHALL provide meaningful error messages
-- **NFR3.3.3**: The system SHALL log all errors for debugging
-- **NFR3.3.4**: The system SHALL implement comprehensive error tracking
-
-#### NFR3.4: Data Backup and Recovery
-- **NFR3.4.1**: The system SHALL perform daily automated database backups
-- **NFR3.4.2**: The system SHALL retain backups for 30 days
-- **NFR3.4.3**: The system SHALL support point-in-time recovery
-- **NFR3.4.4**: The system SHALL test backup restoration procedures regularly
-
----
+### NFR3: Reliability & Availability
+- 99.9% uptime
+- Health checks
+- Retry logic
+- Cached fallback
+- Daily backups
+- PITR support
 
 ### NFR4: Security
-
-#### NFR4.1: Authentication and Authorization
-- **NFR4.1.1**: The system SHALL use JWT tokens for authentication
-- **NFR4.1.2**: The system SHALL hash passwords using secure algorithms (bcrypt/argon2)
-- **NFR4.1.3**: The system SHALL implement role-based access control (RBAC)
-- **NFR4.1.4**: The system SHALL validate all user inputs to prevent injection attacks
-
-#### NFR4.2: Data Protection
-- **NFR4.2.1**: The system SHALL encrypt data in transit using TLS 1.2+
-- **NFR4.2.2**: The system SHALL encrypt sensitive data at rest
-- **NFR4.2.3**: The system SHALL not store source code, only dependency metadata
-- **NFR4.2.4**: The system SHALL comply with GDPR data protection requirements
-
-#### NFR4.3: API Security
-- **NFR4.3.1**: The system SHALL implement rate limiting on all endpoints
-- **NFR4.3.2**: The system SHALL implement CORS policies
-- **NFR4.3.3**: The system SHALL implement CSRF protection
-- **NFR4.3.4**: The system SHALL sanitize all user inputs
-- **NFR4.3.5**: The system SHALL use parameterized queries to prevent SQL injection
-
-#### NFR4.4: Secrets Management
-- **NFR4.4.1**: The system SHALL store API keys and secrets securely (AWS Secrets Manager, HashiCorp Vault)
-- **NFR4.4.2**: The system SHALL never expose secrets in logs or error messages
-- **NFR4.4.3**: The system SHALL rotate secrets regularly
-
-#### NFR4.5: Network Security
-- **NFR4.5.1**: The system SHALL implement WAF (Web Application Firewall)
-- **NFR4.5.2**: The system SHALL implement DDoS protection
-- **NFR4.5.3**: The system SHALL use VPC for isolated network architecture
-
----
+- JWT auth
+- bcrypt/argon2
+- RBAC
+- Input validation
+- TLS 1.2+
+- Data encryption
+- Rate limiting
+- API key vault storage
+- WAF + DDoS protection
 
 ### NFR5: Usability
-
-#### NFR5.1: User Interface
-- **NFR5.1.1**: The system SHALL provide an intuitive web-based user interface
-- **NFR5.1.2**: The system SHALL support drag-and-drop file uploads
-- **NFR5.1.3**: The system SHALL provide clear visual feedback for all user actions
-- **NFR5.1.4**: The system SHALL display progress indicators for long-running operations
-
-#### NFR5.2: Documentation
-- **NFR5.2.1**: The system SHALL provide comprehensive API documentation
-- **NFR5.2.2**: The system SHALL provide user guides and tutorials
-- **NFR5.2.3**: The system SHALL provide clear error messages with actionable guidance
-
-#### NFR5.3: Accessibility
-- **NFR5.3.1**: The system SHALL comply with WCAG 2.1 Level AA accessibility standards
-- **NFR5.3.2**: The system SHALL support keyboard navigation
-- **NFR5.3.3**: The system SHALL provide alternative text for visual elements
-
----
+- Modern UI
+- Drag-and-drop uploads
+- Clear indicators
+- API documentation
+- Tutorials
+- WCAG 2.1 AA
 
 ### NFR6: Maintainability
-
-#### NFR6.1: Code Quality
-- **NFR6.1.1**: The system SHALL follow coding standards and best practices
-- **NFR6.1.2**: The system SHALL maintain code coverage above 80% for unit tests
-- **NFR6.1.3**: The system SHALL include comprehensive code documentation
-
-#### NFR6.2: Monitoring and Logging
-- **NFR6.2.1**: The system SHALL implement structured logging (JSON format)
-- **NFR6.2.2**: The system SHALL log all API requests and responses
-- **NFR6.2.3**: The system SHALL implement application performance monitoring (APM)
-- **NFR6.2.4**: The system SHALL track key metrics: response times, error rates, throughput
-
-#### NFR6.3: ML Model Monitoring
-- **NFR6.3.1**: The system SHALL monitor ML model performance metrics
-- **NFR6.3.2**: The system SHALL detect model drift and data distribution changes
-- **NFR6.3.3**: The system SHALL track prediction latency and throughput
-- **NFR6.3.4**: The system SHALL support A/B testing of model versions
-
----
+- Coding standards
+- 80%+ test coverage
+- Structured logging
+- APM
+- ML model drift detection
 
 ### NFR7: Compatibility
-
-#### NFR7.1: Package Manager Support
-- **NFR7.1.1**: The system SHALL support npm (package.json, package-lock.json)
-- **NFR7.1.2**: The system SHALL support Yarn (yarn.lock)
-- **NFR7.1.3**: The system SHALL support pnpm (pnpm-lock.yaml)
-
-#### NFR7.2: Browser Support
-- **NFR7.2.1**: The system SHALL support modern browsers (Chrome, Firefox, Safari, Edge)
-- **NFR7.2.2**: The system SHALL support browser versions from the last 2 years
-
-#### NFR7.3: API Compatibility
-- **NFR7.3.1**: The system SHALL implement API versioning (/api/v1/)
-- **NFR7.3.2**: The system SHALL maintain backward compatibility for at least 1 major version
-
----
+- npm, Yarn, pnpm
+- Modern browsers
+- API versioning
 
 ### NFR8: Compliance
-
-#### NFR8.1: Security Standards
-- **NFR8.1.1**: The system SHALL support OWASP Top 10 compliance reporting
-- **NFR8.1.2**: The system SHALL support NIST Cybersecurity Framework compliance
-- **NFR8.1.3**: The system SHALL support ISO 27001 compliance reporting
-- **NFR8.1.4**: The system SHALL support SOC 2 compliance reporting
-
-#### NFR8.2: Data Privacy
-- **NFR8.2.1**: The system SHALL comply with GDPR requirements
-- **NFR8.2.2**: The system SHALL allow users to export their data
-- **NFR8.2.3**: The system SHALL allow users to delete their data
-- **NFR8.2.4**: The system SHALL provide privacy policy and terms of service
-
----
+- OWASP, NIST, ISO 27001, SOC 2
+- GDPR
+- Data export/delete options
 
 ### NFR9: Resource Efficiency
+- Caching
+- DB indexing
+- Query optimization
+- ML resource optimization
 
-#### NFR9.1: Caching
-- **NFR9.1.1**: The system SHALL cache package metadata (TTL: 1 hour)
-- **NFR9.1.2**: The system SHALL cache CVE data (TTL: 24 hours)
-- **NFR9.1.3**: The system SHALL cache dashboard statistics (TTL: 30 seconds)
-- **NFR9.1.4**: The system SHALL cache ML classification results (TTL: 6 hours)
-
-#### NFR9.2: Database Optimization
-- **NFR9.2.1**: The system SHALL implement database indexes on frequently queried fields
-- **NFR9.2.2**: The system SHALL implement query optimization
-- **NFR9.2.3**: The system SHALL use pagination for large result sets
-
-#### NFR9.3: Resource Usage
-- **NFR9.3.1**: The system SHALL optimize memory usage for ML model inference
-- **NFR9.3.2**: The system SHALL implement connection pooling to limit resource usage
-- **NFR9.3.3**: The system SHALL clean up temporary files and data regularly
-
----
-
-
-
-**Document End**
-
-
+Document End
 
